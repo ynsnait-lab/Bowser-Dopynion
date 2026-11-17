@@ -1,0 +1,33 @@
+[tool.pytest.ini_options]
+pythonpath = ["."]
+testpaths = ["tests"]
+markers = [
+    "lent: test long (non-régression de la stratégie) ; `pytest -m 'not lent'` pour les sauter en local",
+]
+
+[tool.coverage.run]
+source = ["bot", "outils"]
+branch = true
+
+[tool.coverage.report]
+show_missing = true
+skip_covered = true
+fail_under = 90
+
+[tool.ruff]
+extend-exclude = ["archives"]  # l'ancien bot KOOPA, gardé tel quel
+line-length = 120
+target-version = "py312"
+
+[tool.ruff.lint]
+# BLE : un `except Exception` doit être voulu (et marqué noqa), car une erreur avalée
+# en silence peut cacher une commande invalide.
+select = ["E", "F", "W", "I", "UP", "B", "SIM", "C4", "BLE", "ARG", "RUF100"]
+# SIM103 : dans la stratégie, une règle = un `if` commenté, même quand on pourrait les fusionner.
+ignore = ["SIM103"]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/**" = ["ARG"]  # les fixtures pytest s'injectent par leur nom, même inutilisées
+
+[tool.ruff.lint.isort]
+known-first-party = ["bot", "outils", "tests"]
